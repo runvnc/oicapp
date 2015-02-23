@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "$@" | redis-cli --raw -p 2000

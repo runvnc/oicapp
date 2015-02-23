@@ -1,0 +1,44 @@
+#/bin/bash
+
+usage() {
+  echo "Usage:"
+  echo "addzone <domain> <IP address>"
+}
+
+if [ "$#" -ne 2 ]; then
+  echo "Wrong number of arguments."
+  usage
+  exit 1
+fi
+
+DOMAIN=$1
+IPADDR=$2
+REVIPADDR=$(echo $2 | ipv6calc --out revnibbles.arpa)
+REVIPADDR=${REVIPADDR%?}
+
+add_zone() {
+  echo "Adding zone $1 $2"
+  descr=$(./descrzone $1 $2)
+  echo >> /etc/nsd/nsd.conf
+  printf "$descr" >> /etc/nsd/nsd.conf
+  echo >> /etc/nsd/nsd.conf 
+} 
+
+replace_zone() {
+  cp -p /etc/nsd/nsd.conf /etc/nsd/nsd.conf.`date +%Y.%m.%d`
+  ./replacebetween "# begin X $DOMAIN X" "# end X $DOMAIN X" "" < /etc/nsd/nsd.conf >nsd_updated.conf
+  cp nsd_updated.conf /etc/nsd/nsd.conf
+  add_zone $DOMAIN $REVIPADDR
+}
+
+if grep -q $DOMAIN"$" /etc/nsd/nsd.conf ; then
+  echo "Replacing zone."
+  replace_zone $DOMAIN $REVIPADDR
+else
+  echo "Adding zone."
+  add_zone $DOMAIN $REVIPADDR
+fi
+
+./makezone $DOMAIN $IPADDR
+./sched updatezones "./zoneupd" 1
+
