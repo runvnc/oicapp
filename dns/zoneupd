@@ -1,0 +1,4 @@
+#!/bin/bash
+nsd-control reconfig
+nsd-control reload
+

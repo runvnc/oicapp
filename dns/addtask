@@ -1,0 +1,2 @@
+#!/bin/bash
+tsp ./addorupdzone $1 $2

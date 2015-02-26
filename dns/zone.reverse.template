@@ -1,0 +1,14 @@
+$ORIGIN DOMAIN.  ; default zone domain
+$TTL 120         ; default time to live
+
+IPADDRREV.in-addr.arpa. IN SOA ns1.DOMAIN. admin.DOMAIN. (
+           SERIAL  ; serial number
+           120       ; Refresh
+           120        ; Retry
+           120      ; Expire
+           120       ; Min TTL
+           )
+
+IPADDRREV.in-addr.arpa.   IN PTR www
+IPADDRREV.in-addr.arpa.   IN PTR mail
+NSHOSTIPREV.in-addr.arpa. IN PTR ns1

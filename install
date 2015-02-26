@@ -1,0 +1,2 @@
+apt-get install ruby1.9.1-dev
+gem install tugboat

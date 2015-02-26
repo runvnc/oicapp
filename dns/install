@@ -1,0 +1,3 @@
+#!/bin/bash
+sudo apt-get install task-spooler ipv6calc nsd3
+sudo cp nsd.conf /etc/nsd

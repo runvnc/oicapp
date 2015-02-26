@@ -1,0 +1,38 @@
+#!/bin/bash
+
+usage() {
+  echo "Usage: "
+  echo "makezone <domain> <IP address>"
+}
+
+if [ "$#" -ne 2 ]; then
+  echo "Wrong number of arguments."
+  usage
+  exit 1
+fi
+
+DOMAIN=$1
+IPADDRESS=$2
+NSHOSTIP=$(./myip)
+
+IPADDRREV=$(echo $IPADDRESS | ipv6calc --out revnibbles.arpa) 
+NSHOSTIPREV=$(echo $NSHOSTIP | ipv6calc --out revnibbles.arpa)
+SERIAL=$(./serial)
+
+forward=$(cat zone.forward.template)
+
+forward=${forward//DOMAIN/$DOMAIN}
+forward=${forward//IPADDRESS/$IPADDRESS}
+forward=${forward//NSHOSTIP/$NSHOSTIP}
+forward=${forward//IPADDRREV/$IPADDRREV}
+forward=${forward//NSHOSTIPREV/$NSHOSTIPREV}
+forward=${forward//SERIAL/$SERIAL}
+
+echo "$forward" >/etc/nsd/$DOMAIN".forward"
+
+if [[ -f /etc/nsd/$DOMAIN".add.forward" ]]; then
+  cat /etc/nsd/$DOMAIN".add.forward" >> /etc/nsd/$DOMAIN".forward"
+fi
+
+
+
