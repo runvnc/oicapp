@@ -2,14 +2,20 @@
 
 # createserver [name] [image] [user]
 
+echo $@
+
 declare -i dt
 declare -i expires
 dt=$(date +%s)
 (( expires=dt+(1000*60*60*24*30) ))
-./runredis hset srv:$1 status paid expires $expires
+./runredis hset srv:$1 status paid
+./runredis hset srv:$1 expires $expires
 ./runredis lpush acct:$1 paid $amt date $dt for $1
-id=$(tugboat create $1 -i 10581649)
-ip=$(tugboat info $id | grep IP | tr -s ' ' | cut -f 2)
+tugboat create $1 -i 10581649
+sleep 80
+ip=$(tugboat info $1 | grep IP | tr -s ' ' | cut -f 2)
 dns/addtask $1 $ip
-tugboat ssh $1 docker run --name $1 $2
-./runredis hset srv:$1 user $3 image $2 name $1 
+echo docker run --name $1 $2 | tugboat ssh $1
+./runredis hset srv:$1 user $3
+./runredis hset srv:$1 image $2
+./runredis hset srv:$1 name $1 
