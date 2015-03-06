@@ -11,9 +11,9 @@ dt=$(date +%s)
 ./runredis hset srv:$1 status paid
 ./runredis hset srv:$1 expires $expires
 ./runredis lpush acct:$1 paid $amt date $dt for $1
-tugboat create $1 -i 10581649
+tugboat create $1 -i 10581649 -k 711445
 sleep 80
-ip=$(tugboat info $1 | grep IP | tr -s ' ' | cut -f 2)
+ip=$(tugboat info $1 | grep IP | tr -s ' ' | cut -d ' ' -f 2)
 dns/addtask $1 $ip
 echo docker run --name $1 $2 | tugboat ssh $1
 ./runredis hset srv:$1 user $3
