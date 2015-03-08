@@ -9,7 +9,7 @@ proc handleRequest(client: Socket, path, query: string): bool {.procvar.} =
     echo("request ok");
     client.send("ok")
     client.close
-    discard spawn execShellCmd("./createserver " & join(parts[2..4], " "))
+    discard spawn execShellCmd("./createserver " & join(parts[2..5], " "))
 
 run(handleRequest, Port(6001))
 
